@@ -1,3 +1,8 @@
 
-src/node_modules
+html/
+src/_book/
+src/node_modules/
+
+//
+private/
 
