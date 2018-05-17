@@ -39,13 +39,13 @@ contract('FooTokenSale', async function(accounts) {
   it ('should add address into WhiteList', async function() {
     const sale = await FooTokenSale.deployed();
 
-    const isAllow = await sale.whiteList(accounts[0]);
+    const isAllow = await sale.isAllow(accounts[0]);
     assert(! isAllow, "is not allow");
     
     const isSuccess = await sale.addWhiteList([accounts[0]]);
     assert(isSuccess, 0, "is success");
     
-    const isAllow2 = await sale.whiteList(accounts[0]);
+    const isAllow2 = await sale.isAllow(accounts[0]);
     assert(isAllow2, "is allow");
   });
 
