@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h3>This is an customer page</h3>
+    <h3>This is a customer page</h3>
     <FooToken/>
   </div>
 </template>

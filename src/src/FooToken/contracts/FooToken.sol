@@ -62,6 +62,7 @@ contract FooToken {
 
     // FIXME!!!
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
+        require(_from != 0x0 && _to != 0x0);
         require(balanceOf(_from) >= _value);
         require(balanceOf(_to) + _value >= balanceOf(_to));
  
@@ -84,6 +85,9 @@ contract FooToken {
     }
 
     function mint(address _to, uint256 _value) isMinter public returns (bool) {
+        require(_to != 0x0);
+        require(balanceOf(_to) + _value >= balanceOf(_to));        
+
         totalSupply += _value;
         setBalance(_to, balanceOf(_to) + _value);
 

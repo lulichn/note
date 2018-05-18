@@ -3,30 +3,81 @@
     <div class="content">
       <p v-if="contractAddress">The Token contract is deployed at {{contractAddress}}</p>
       <p v-if="!contractAddress">No contracts found</p>
+
       <p v-if="account">Current account: {{account}}</p>
       <p v-if="!account">No accounts found</p>
 
-      <table class="hover">
-        <thead>
-          <tr>
-            <th>address</th>
-            <th>amount</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="user in users" v-bind:key="user.address">
-            <td>{{user.address}}</td>
-            <td>{{user.amount}}</td>
-            <td>
-              <button @click="transferToken(user.address)">Send</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      
-      <input v-model="targetUser" type="string">
-      <button @click="sendToken">Send token</button>
+      <p v-if="currentAmount">Current ammount: {{currentAmount}}</p>
+
+      <div>
+        <h3>Purchase Token</h3>
+        <form>
+          <div class="grid-container">
+            <div class="grid-x grid-padding-x">
+              <div class="medium-3 cell">
+                <label>Input ether
+                  <input v-model="ether" type="number" placeholder="ether">
+                </label>
+              </div>
+              <div class="medium-2 cell">
+                <button v-if="!isAllowPurchase" class="hollow button alert" disabled>
+                  Unauthorized
+                </button>
+                <button v-if="isAllowPurchase" class="hollow button" @click="purchaseToken">
+                  Purchase
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div>
+        <h3>Send Token</h3>
+        <form>
+          <div class="grid-container">
+            <div class="grid-x grid-padding-x">
+              <div class="medium-6 cell">
+                <label>Input address
+                  <input v-model="targetUser" type="text" placeholder="address">
+                </label>
+              </div>
+              <div class="medium-3 cell">
+                <label>Input amount
+                  <input v-model="sendAmount" type="number" placeholder="amount">
+                </label>
+              </div>
+              <div class="medium-3 cell">
+                <button class="hollow button" @click="sendToken">
+                  Send token
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div>
+        <h3>Users</h3>
+        <table class="hover">
+          <thead>
+            <tr>
+              <th>address</th>
+              <th>amount</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="user in users" v-bind:key="user.address">
+              <td>{{user.address}}</td>
+              <td>{{user.amount}}</td>
+              <td>
+                <button v-show="user.address.toLowerCase() != contractAddress.toLowerCase()" class="hollow button" @click="setAddress(user.address)">Send</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <div class="message" v-if="message">{{message}}</div>
   </div>
@@ -35,19 +86,28 @@
 <script>
 import Web3 from 'web3'
 import contract from 'truffle-contract'
-import artifacts from '../../build/contracts/FooToken.json'
-const FooToken = contract(artifacts)
+
+import fooTokenArtifacts from '../../build/contracts/FooToken.json'
+const FooToken = contract(fooTokenArtifacts)
+import fooTokenSaleArtifacts from '../../build/contracts/FooTokenSale.json'
+const FooTokenSale = contract(fooTokenSaleArtifacts)
 
 export default {
   name: 'FooToken',
   data() {
     return {
       message: null,
+
       contractAddress: null,
       account: null,
+      currentAmount: 0,
+      isAllowPurchase: false,
+
+      ether: 0,
 
       users: [],
       targetUser: null,
+      sendAmount: 0,
     }
   },
   created() {
@@ -62,6 +122,7 @@ export default {
     }
 
     FooToken.setProvider(web3.currentProvider)
+    FooTokenSale.setProvider(web3.currentProvider)
     web3.eth.getAccounts((err, accs) => {
       if (err != null) {
         console.error(err)
@@ -74,25 +135,44 @@ export default {
         return
       }
       this.account = accs[0];
-      FooToken.deployed()
-        .then((instance) => instance.address)
-        .then((address) => {
-          this.contractAddress = address
-          this.updateUsers()
-        })
+
+      Promise.all([
+        FooToken.deployed(),
+        FooTokenSale.deployed()
+        ])
+      .then(([token, sale]) => {
+        return Promise.all([
+          token.address,
+          token.balanceOf(this.account),
+          sale.isAllow(this.account)
+          ])
+      })
+      .then((results) => {
+        this.contractAddress = results[0]
+        this.currentAmount   = results[1].toNumber()
+        this.isAllowPurchase = results[2]
+        
+        this.updateUsers()
+      })
     })
   },
   methods: {
-    sendToken() {
-      this.transferToken(this.targetUser)
+    setAddress(address) {
+      this.targetUser = address;
     },
 
-    transferToken(to) {
+    sendToken() {
+      this.transferToken(this.targetUser, this.sendAmount)
+    },
+
+    transferToken(to, amount) {
       this.message = "Transaction started";
+
       return FooToken.deployed()
         .then((instance) => {
-          return instance.transfer(to, 1, {from: this.account})
-        }).then(() => {
+          return instance.transfer(to, amount, {from: this.account})
+        })
+        .then(() => {
           this.message = "Transaction done"
           this.updateUsers()
         })
@@ -100,6 +180,27 @@ export default {
           console.error(e)
           this.message = "Transaction failed"
         })
+    },
+
+    purchaseToken() {
+      this.message = "Transaction started";
+
+      return FooTokenSale.deployed()
+        .then((instance) => {
+          return instance.sendTransaction({
+            from: this.account,
+            value: web3.utils.toWei(this.ether, "ether")
+            })
+        })
+        .then(() => {
+          this.message = "Transaction done"
+          this.updateUsers()
+        })
+        .catch((e) => {
+          console.error(e)
+          this.message = "Transaction failed"
+        })
+
     },
 
     updateUsers() {
@@ -154,5 +255,10 @@ a {
   font-size: 13px;
   line-height: 1;
   padding: 13px;
+}
+
+
+.button {
+  margin-top: 12px
 }
 </style>

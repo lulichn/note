@@ -3,24 +3,52 @@
     <div class="content">
       <p v-if="contractAddress">The TokenSale contract is deployed at {{contractAddress}}</p>
       <p v-if="!contractAddress">No contracts found</p>
+
+      <p v-if="tokenAddress">Token address: {{tokenAddress}}</p>
+      <p v-if="!tokenAddress">No token found</p>
+
+      <p v-if="walletAddress">Wallet address: {{walletAddress}}</p>
+      <p v-if="!walletAddress">No wallet found</p>
+
       <p v-if="account">Current account: {{account}}</p>
       <p v-if="!account">No accounts found</p>
 
-      <table class="hover">
-        <thead>
-          <tr>
-            <th>address</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="user in whiteList" v-bind:key="user.address">
-            <td>{{user.address}}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div>
+        <h3>Add to WhiteList</h3>
+        <form>
+          <div class="grid-container">
+            <div class="grid-x grid-padding-x">
+              <div class="medium-6 cell">
+                <label>Input address
+                  <input v-model="inputAddress" type="text" placeholder="inputAddress">
+                </label>
+              </div>
+              <div class="medium-3 cell">
+                <button class="hollow button" @click="addWhiteList">
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div>
+        <h3>WhiteList</h3>
+        <table class="hover">
+          <thead>
+            <tr>
+              <th>address</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="user in whiteList" v-bind:key="user.address">
+              <td>{{user.address}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       
-      <input v-model="inputAddress" type="string">
-      <button @click="addWhiteList">Add WhiteList</button>
     </div>
     <div class="message" v-if="message">{{message}}</div>
   </div>
@@ -38,6 +66,9 @@ export default {
     return {
       message: null,
       contractAddress: null,
+      tokenAddress: null,
+      walletAddress: null,
+      
       account: null,
 
       whiteList: [],
@@ -69,9 +100,18 @@ export default {
       }
       this.account = accs[0];
       FooTokenSale.deployed()
-        .then((instance) => instance.address)
-        .then((address) => {
-          this.contractAddress = address
+        .then((instance) => {
+          return Promise.all([
+            instance.address,
+            instance.token(),
+            instance.wallet()
+            ])
+          })
+        .then((results) => {
+          this.contractAddress = results[0]
+          this.tokenAddress    = results[1]
+          this.walletAddress   = results[2]
+          
           this.updateWhiteList()
         })
     })
@@ -140,5 +180,8 @@ a {
   font-size: 13px;
   line-height: 1;
   padding: 13px;
+}
+.button {
+  margin-top: 12px
 }
 </style>
