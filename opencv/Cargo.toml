@@ -1,0 +1,7 @@
+[package]
+name = "opencv"
+version = "0.1.0"
+authors = ["Daisuke HIGASHI <d.higashi@atomitech.jp>"]
+
+[dependencies]
+opencv = "*"
