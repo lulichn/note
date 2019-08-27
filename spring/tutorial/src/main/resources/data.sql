@@ -13,7 +13,7 @@ INSERT INTO reservable_room (reserved_date, room_id) VALUES (CURRENT_DATE, 7);
 INSERT INTO reservable_room (reserved_date, room_id) VALUES (CURRENT_DATE + 1, 7);
 INSERT INTO reservable_room (reserved_date, room_id) VALUES (CURRENT_DATE - 1, 7);
 
-INSERT INTO usr(user_id, first_name, last_name, password, role_name) VALUES ('taro-ya,ada', 'Taro', 'Yamada', 'demo', 'USER');
-INSERT INTO usr(user_id, first_name, last_name, password, role_name) VALUES ('a', 'A', 'A', 'demo', 'USER');
-INSERT INTO usr(user_id, first_name, last_name, password, role_name) VALUES ('b', 'B', 'B', 'demo', 'USER');
-INSERT INTO usr(user_id, first_name, last_name, password, role_name) VALUES ('c', 'C', 'C', 'demo', 'ADMIN');
+INSERT INTO usr(user_id, first_name, last_name, role_name, password) VALUES ('taro-yamada', 'Taro', 'Yamada', 'USER', '$2a$10$oxSJl.keBwxmsMLkcT9lPeAIxfNTPNQxpeywMrF7A3kVszwUTqfTK');
+INSERT INTO usr(user_id, first_name, last_name, role_name, password) VALUES ('aaaa', 'A', 'A', 'USER', '$2a$10$oxSJl.keBwxmsMLkcT9lPeAIxfNTPNQxpeywMrF7A3kVszwUTqfTK');
+INSERT INTO usr(user_id, first_name, last_name, role_name, password) VALUES ('bbbb', 'B', 'B', 'USER', '$2a$10$oxSJl.keBwxmsMLkcT9lPeAIxfNTPNQxpeywMrF7A3kVszwUTqfTK');
+INSERT INTO usr(user_id, first_name, last_name, role_name, password) VALUES ('cccc', 'C', 'C', 'ADMIN', '$2a$10$oxSJl.keBwxmsMLkcT9lPeAIxfNTPNQxpeywMrF7A3kVszwUTqfTK');
