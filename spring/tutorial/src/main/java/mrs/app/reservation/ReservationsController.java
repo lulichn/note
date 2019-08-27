@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -98,7 +99,9 @@ public class ReservationsController {
 		User user = userDetails.getUser();
 
 		try {
-			reservationService.cancel(reservationId, user);
+			reservationService.findById(reservationId).ifPresent(reservation -> {
+				reservationService.cancel(reservation);
+			});
 		} catch(IllegalStateException e) {
 			model.addAttribute("error", e.getMessage());
 			return reserveForm(date, roomId, model);
