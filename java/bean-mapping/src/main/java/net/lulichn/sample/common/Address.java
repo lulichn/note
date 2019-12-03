@@ -5,7 +5,6 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain=true)
-
 public class Address {
   private String zip;
   private String address1;

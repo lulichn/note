@@ -4,10 +4,14 @@ import net.lulichn.sample.common.Address;
 import net.lulichn.sample.common.Destination;
 import net.lulichn.sample.common.Sex;
 import net.lulichn.sample.common.Source;
+import org.junit.Test;
 import org.modelmapper.ModelMapper;
 
+import static org.junit.Assert.assertEquals;
+
 public class ModelMapperSample {
-  public static void main(String[] args) {
+  @Test
+  public void sample() {
     var mapper = new ModelMapper();
     var src = new Source()
         .setId(10)
@@ -19,6 +23,6 @@ public class ModelMapperSample {
             .setAddress2("main-st"));
 
     var dest = mapper.map(src, Destination.class);
-    assert dest.getId() != 10;
+    assertEquals(10, dest.getId());
   }
 }

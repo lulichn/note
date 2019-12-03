@@ -5,14 +5,16 @@ import net.lulichn.sample.common.Destination;
 import net.lulichn.sample.common.Sex;
 import net.lulichn.sample.common.Source;
 import org.junit.Test;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 import org.modelmapper.ModelMapper;
 
 import static org.junit.Assert.assertEquals;
 
-public class ModelStructSample {
+public class MapStructSample {
   @Test
   public void sample() {
-    var mapper = new ModelMapper();
     var src = new Source()
         .setId(10)
         .setName("foo bar")
@@ -22,7 +24,14 @@ public class ModelStructSample {
             .setAddress1("1-2-3")
             .setAddress2("main-st"));
 
-    var dest = mapper.map(src, Destination.class);
+    var dest = SampleMapper.INSTANCE.toDest(src);
     assertEquals(10, dest.getId());
+  }
+
+  @Mapper
+  public interface SampleMapper {
+    SampleMapper INSTANCE = Mappers.getMapper(SampleMapper.class);
+
+    Destination toDest(Source src);
   }
 }

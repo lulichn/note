@@ -1,2 +1,6 @@
-rootProject.name = 'bean-mapping'
+include 'bean-mapping'
+include 'cli-libs'
+include 'todo-list'
+include 'aop'
+include 'aws-sdk'
 

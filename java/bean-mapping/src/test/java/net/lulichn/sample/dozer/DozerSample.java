@@ -1,4 +1,4 @@
-package net.lulichn.sample.doov;
+package net.lulichn.sample.dozer;
 
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import net.lulichn.sample.common.Address;
@@ -9,7 +9,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class DoovSample {
+// FIXME: java.lang.NoClassDefFoundError: javax/xml/bind/JAXBException
+public class DozerSample {
   @Test
   public void sample() {
     var mapper = DozerBeanMapperBuilder.buildDefault();
