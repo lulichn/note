@@ -10,6 +10,16 @@ export default class BasicScreen extends React.Component {
           title="Go to Details"
           onPress={() => this.props.navigation.navigate('Home')}
         />
+
+        <Button
+          title="Login"
+          onPress={() => this.props.navigation.navigate('Login')}
+        />
+
+        <Button
+          title="Purchase"
+          onPress={() => this.props.navigation.navigate('Purchase')}
+        />
       </View>
     );
   }
