@@ -1,4 +1,4 @@
-package net.lulichn.sample.dozer;
+package net.lulichn.sample.doov;
 
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import net.lulichn.sample.common.Address;
@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class DozerSample {
+public class DoovSample {
   @Test
   public void sample() {
     var mapper = DozerBeanMapperBuilder.buildDefault();

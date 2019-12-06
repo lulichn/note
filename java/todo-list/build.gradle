@@ -1,15 +1,5 @@
 plugins {
-    id 'java'
     id 'war'
-}
-
-group 'net.lulichn'
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.11
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {

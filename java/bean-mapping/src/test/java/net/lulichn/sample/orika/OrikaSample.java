@@ -1,6 +1,6 @@
-package net.lulichn.sample.doov;
+package net.lulichn.sample.orika;
 
-import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
 import net.lulichn.sample.common.Address;
 import net.lulichn.sample.common.Destination;
 import net.lulichn.sample.common.Sex;
@@ -9,10 +9,12 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class DoovSample {
+public class OrikaSample {
   @Test
   public void sample() {
-    var mapper = DozerBeanMapperBuilder.buildDefault();
+    var mapperFactory = new DefaultMapperFactory.Builder().build();
+    var mapper = mapperFactory.getMapperFacade();
+
     var src = new Source()
         .setId(10)
         .setName("foo bar")
