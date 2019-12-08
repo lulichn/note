@@ -1,0 +1,19 @@
+{
+  "docs": {
+    "Docusaurus": [
+      "doc1"
+    ],
+    "Spring": [
+      "spring-webflux"
+    ],
+    "Redis": [
+      "redis"
+    ]
+  },
+  "docs-other": {
+    "First Category": [
+      "doc4",
+      "doc5"
+    ]
+  }
+}
