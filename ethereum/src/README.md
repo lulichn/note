@@ -1,3 +1,0 @@
-# Learn Ethereum
-
-TODO
